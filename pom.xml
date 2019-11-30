@@ -63,59 +63,6 @@
         </dependency>
     </dependencies>
 
-    <!-- private repository -->
-
-    <repositories>
-        <repository>
-            <id>Pagoda-Repository</id>
-            <name>pagoda</name>
-            <url>http://maven.dev.pagoda.com.cn:10008/nexus/content/groups/public</url>
-        </repository>
-
-
-        <repository>
-            <id>dev-nexus</id>
-            <name>nexus</name>
-            <url>http://maven.dev.pagoda.com.cn:10008/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>dev-nexus</id>
-            <name>nexus</name>
-            <url>http://maven.dev.pagoda.com.cn:10008/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-
-    </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>user-release</id>
-            <name>User Project Release</name>
-            <url>http://maven.dev.pagoda.com.cn:10008/nexus/content/repositories/releases</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>user-snapshots</id>
-            <name>User Project SNAPSHOTS</name>
-            <url>http://maven.dev.pagoda.com.cn:10008/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -150,34 +97,6 @@
                     <nexusUrl>http://maven.dev.pagoda.com.cn:10008/nexus/content/groups/public</nexusUrl>
                     <skipStaging>true</skipStaging>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>repackage</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
             </plugin>
 
         </plugins>
