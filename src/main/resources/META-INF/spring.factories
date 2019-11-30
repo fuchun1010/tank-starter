@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.tank.util.json.JsonServiceConfigure,\
+com.tank.util.redis.RedisServiceConfig
