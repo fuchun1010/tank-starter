@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,7 @@ public class RedisServiceConfig {
 
   @Bean("redisService")
   @ConditionalOnClass(RedisTemplate.class)
-  @ConditionalOnProperty(prefix = "spring.redis", name = {"database"})
+  @ConditionalOnBean(RedisTemplate.class)
   public RedisService createRedisService(@Autowired RedisTemplate<String, Object> redisTemplate) {
     return new RedisService(redisTemplate);
   }
