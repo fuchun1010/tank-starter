@@ -1,5 +1,6 @@
 package com.tank.util;
 
+import com.tank.util.basic.EnableKvConverter;
 import com.tank.util.json.JsonService;
 import org.junit.After;
 import org.junit.Assert;
@@ -23,7 +24,18 @@ public class JsonServiceTest {
   public void init() {
     this.annotationContext = new AnnotationConfigApplicationContext();
     this.annotationContext.register(JsonService.class);
+    this.annotationContext.register(EnableKvConverter.class);
   }
+
+  @Test
+  public void testGetterToFieldName() {
+    String getter = "getName";
+    String tail = getter.substring(4, getter.length());
+    String header = getter.substring(3, 4).toLowerCase();
+    String fieldName = String.format("%s%s", header, tail);
+    System.out.println(fieldName);
+  }
+
 
   @After
   public void end() {

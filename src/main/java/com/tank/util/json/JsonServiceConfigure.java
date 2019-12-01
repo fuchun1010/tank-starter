@@ -1,6 +1,7 @@
 package com.tank.util.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tank.util.basic.EnableKvConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author tank198435163.com
  */
 @Configuration
+@EnableKvConverter
 public class JsonServiceConfigure {
 
   @Bean("jsonService")
