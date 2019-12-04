@@ -12,30 +12,28 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class FreeMarkerTest {
 
 
-  public List<SqlBody> testGenerateTables() {
+  @Test
+  public void testGenerateTables() {
     List<SqlBody> result = this.doneWithMysql(conn -> {
-      String sql = "show tables";
+      String tables = "show tables";
       List<SqlBody> allTables = new LinkedList<>();
       try {
         Statement statement = conn.createStatement();
-        ResultSet rs = statement.executeQuery(sql);
+        ResultSet rs = statement.executeQuery(tables);
         rs.setFetchDirection(ResultSet.FETCH_FORWARD);
         SqlBody tableContent;
         while (rs.next()) {
           String tableName = rs.getString(1);
-          sql = String.format("show create table %s", tableName);
-          rs = statement.executeQuery(sql);
-          rs.setFetchDirection(ResultSet.FETCH_FORWARD);
-          while (rs.next()) {
+          String sql = String.format("show create table %s", tableName);
+          ResultSet tableCursor = statement.executeQuery(sql);
+          tableCursor.setFetchDirection(ResultSet.FETCH_FORWARD);
+          while (tableCursor.next()) {
             String sqlBody = rs.getString(2);
             for (int i = 0; i < 4; i++) {
               tableContent = new SqlBody();
@@ -47,7 +45,7 @@ public class FreeMarkerTest {
               allTables.add(tableContent);
             }
           }
-
+          tableCursor.close();
         }
         rs.close();
       } catch (SQLException e) {
@@ -56,7 +54,7 @@ public class FreeMarkerTest {
       return allTables;
     });
 
-    return result;
+
   }
 
 
@@ -69,7 +67,7 @@ public class FreeMarkerTest {
     cfg.setDefaultEncoding("UTF-8");
     cfg.setDirectoryForTemplateLoading(new File(path));
     Template template = cfg.getTemplate("sql-tables.ftl");
-    List<SqlBody> sqlBodies = this.testGenerateTables();
+    List<SqlBody> sqlBodies = new ArrayList<>();
     @Cleanup Writer out = new FileWriter(new File(String.format("%s/table.sql", download)));
     Map<String, List<SqlBody>> data = new HashMap<>();
     data.putIfAbsent("data", sqlBodies);
