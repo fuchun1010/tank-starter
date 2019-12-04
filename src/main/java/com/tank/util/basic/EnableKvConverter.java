@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({KvConverterImporter.class})
+@Import({KvConverterImporter.class, ColorImporter.class})
 public @interface EnableKvConverter {
 
 }
