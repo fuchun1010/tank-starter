@@ -1,3 +1,3 @@
 <#list data as item>
-   ${item.sqlBody}
+   ${item};
 </#list>
