@@ -22,7 +22,7 @@ public class SqlTableManager implements SqlTableScript<String> {
 
   @Override
   @SneakyThrows
-  public Map<String, Object> createSqlTableScript(@NonNull Properties props, @NonNull Integer splitNumberPerTable) {
+  public Map<String, Object> createSqlTableScript(@NonNull final String dbName, @NonNull Properties props, @NonNull Integer splitNumberPerTable) {
 
     if (!this.isPowerOf2(splitNumberPerTable)) {
       throw new IllegalArgumentException("splitNumberPerTable必须是2的n次方");
@@ -36,7 +36,7 @@ public class SqlTableManager implements SqlTableScript<String> {
     MySqlDb<String> mySqlDb = new MySqlDb<>(new LinkedList<>());
     Collection<String> tables = mySqlDb.toCollection(connInfo, "show tables", rs -> {
       try {
-        return rs.getString(1);
+        return rs.getString(1).trim();
       } catch (SQLException e) {
         e.printStackTrace();
       }
@@ -52,7 +52,7 @@ public class SqlTableManager implements SqlTableScript<String> {
       String sql = String.format("show create table %s", table);
       Collection<String> sqlStatement = mySqlDb.toCollection(connInfo, sql, rs -> {
         try {
-          return rs.getString(2);
+          return rs.getString(2).trim();
         } catch (SQLException e) {
           e.printStackTrace();
         }
@@ -68,11 +68,12 @@ public class SqlTableManager implements SqlTableScript<String> {
 
     Map<String, Object> map = new HashMap<>(1 << 4);
     map.put("data", result);
+    map.putIfAbsent("dbName", dbName);
     return map;
   }
 
   @SneakyThrows
-  public void generateSql(@NonNull final Map<String, Object> data) {
+  public void generateSql(@NonNull final Map<String, Object> data, String sqlScriptName) {
     if (data.size() == 0) {
       throw new IllegalArgumentException("");
     }
@@ -83,7 +84,7 @@ public class SqlTableManager implements SqlTableScript<String> {
     cfg.setDirectoryForTemplateLoading(new File(path));
     Template template = cfg.getTemplate("sql-tables.ftl");
 
-    @Cleanup Writer out = new FileWriter(new File(String.format("%s/table.sql", download)));
+    @Cleanup Writer out = new FileWriter(new File(String.format("%s/%s.sql", download, sqlScriptName)));
     template.process(data, out);
   }
 

@@ -8,7 +8,7 @@ import java.util.Properties;
 public interface SqlTableScript<T> {
 
 
-  Map<String, Object> createSqlTableScript(@NonNull final Properties props, @NonNull Integer splitNumberPerTable);
+  Map<String, Object> createSqlTableScript(@NonNull final String dbName, @NonNull final Properties props, @NonNull Integer splitNumberPerTable);
 
 
 }
