@@ -2,3 +2,5 @@ target/
 tank-util-spring-boot-starter.iml
 .idea/
 download/
+src/test/resources/1.txt
+src/main/resources/1.txt

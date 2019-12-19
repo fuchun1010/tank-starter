@@ -1,7 +1,9 @@
 package com.tank.util;
 
+import com.annimon.stream.IntStream;
 import com.tank.util.basic.KvConverter;
 import com.tank.util.json.Person;
+import lombok.val;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,11 @@ public class KvTest {
     this.kvConverter = new KvConverter();
   }
 
+  @Test
+  public void testRange() {
+    val rs = IntStream.rangeClosed(1, 13).boxed().filter(item -> item.compareTo(10) == 0).findFirst().isEmpty();
+    System.out.println(rs);
+  }
 
   private KvConverter kvConverter;
 
