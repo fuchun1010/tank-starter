@@ -11,7 +11,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -21,12 +21,11 @@ public class NioServer {
 
   public static void main(String[] args) {
 
-    NioServer nioServer = new NioServer("localhost", 10000);
+    NioServer nioServer = new NioServer(10000);
     nioServer.startNioServer();
   }
 
-  public NioServer(@NonNull String ip, @NonNull Integer port) {
-    this.ip = ip;
+  public NioServer(@NonNull Integer port) {
     this.port = port;
   }
 
@@ -66,18 +65,18 @@ public class NioServer {
         }
 
         if (selectionKey.isAcceptable()) {
-          this.handle(selectionKey, selector, (key, tmpSelector) -> {
+          this.handle(selectionKey, key -> {
             logger.info("accept connection");
             try {
               SocketChannel socketChannel = this.serverSocketChannel.accept();
               socketChannel.configureBlocking(false);
-              socketChannel.register(tmpSelector, OP_READ);
+              socketChannel.register(key.selector(), OP_READ);
             } catch (Exception e) {
               System.err.println(String.format("accept exception:[%s]", e.getMessage()));
             }
           });
         } else if (selectionKey.isReadable()) {
-          this.handle(selectionKey, selector, (key, tmpSelector) -> {
+          this.handle(selectionKey, key -> {
             SocketChannel channel = ((SocketChannel) key.channel());
             ByteBuffer buffer = ByteBuffer.allocate(8);
             byte[] target = null;
@@ -103,21 +102,21 @@ public class NioServer {
               }
               System.out.println(String.format("receive data:[%s]", words));
               channel.configureBlocking(false);
-              channel.register(selector, OP_WRITE, words);
+              channel.register(key.selector(), OP_WRITE, words);
             } catch (Exception e) {
               e.printStackTrace();
             }
           });
         } else if (selectionKey.isWritable()) {
 
-          this.handle(selectionKey, selector, (key, tmpSelector) -> {
+          this.handle(selectionKey, key -> {
             SocketChannel channel = ((SocketChannel) key.channel());
             try {
               String words = ((String) key.attachment());
               ByteBuffer data = ByteBuffer.wrap(words.getBytes());
               channel.write(data);
               channel.configureBlocking(false);
-              channel.register(selector, OP_READ, words);
+              channel.register(key.selector(), OP_READ, words);
             } catch (Exception e) {
               System.err.println(String.format("write exception:[%s]", e.getMessage()));
             }
@@ -144,9 +143,8 @@ public class NioServer {
   }
 
   public void handle(@NonNull final SelectionKey selectionKey,
-                     @NonNull final Selector selector,
-                     @NonNull final BiConsumer<SelectionKey, Selector> handler) {
-    handler.accept(selectionKey, selector);
+                     @NonNull final Consumer<SelectionKey> handler) {
+    handler.accept(selectionKey);
   }
 
 

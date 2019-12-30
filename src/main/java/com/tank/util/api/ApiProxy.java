@@ -15,7 +15,7 @@ public class ApiProxy<I> implements InvocationHandler {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     Class<?>[] interfaces = this.api.getClass().getInterfaces();
-    if (Objects.isNull(interfaces)) {
+    if (Objects.isNull(interfaces) || interfaces.length == 0) {
       throw new IllegalArgumentException("proxy must implements Interface");
     }
     System.out.println("start");

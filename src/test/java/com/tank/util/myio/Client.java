@@ -29,6 +29,10 @@ public class Client {
       while (selectedKeys.hasNext()) {
         SelectionKey selectedKey = selectedKeys.next();
 
+        synchronized (selectedKeys) {
+          selectedKeys.remove();
+        }
+
         if (selectedKey.isAcceptable()) {
           SocketChannel socketChannel = serverSocketChannel.accept();
           socketChannel.configureBlocking(false);
@@ -43,7 +47,7 @@ public class Client {
           }
         }
 
-        selectedKeys.remove();
+
       }
     }
   }
