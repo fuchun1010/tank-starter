@@ -18,7 +18,7 @@ public class NioServer extends Server {
   @Override
   @SneakyThrows
   public void start() {
-    log.info("start server at:[{}]", this.socketAddress.getPort());
+    log.info("listen port on:[{}]", this.socketAddress.getPort());
     ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
     serverSocketChannel.bind(super.socketAddress);
     SelectionLoop selectionLoop = new SelectionLoop(serverSocketChannel, newConnections, connectionEvents);

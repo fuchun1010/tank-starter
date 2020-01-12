@@ -3,6 +3,7 @@ package com.tank.io;
 import com.tank.message.ModeChangeRequest;
 import com.tank.queue.ModeChangeRequestQueue;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -12,10 +13,12 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class NioSocketConnection extends Connection {
 
+  @SneakyThrows
   public NioSocketConnection(@NonNull final SocketChannel socketChannel,
                              @NonNull final Selector selector,
                              @NonNull final ModeChangeRequestQueue queue) {
     this.socketChannel = socketChannel;
+    this.socketChannel.register(selector, SelectionKey.OP_READ, this);
     this.selector = selector;
     this.queue = queue;
     this.writeBuffers = new ConcurrentLinkedDeque<>();
@@ -37,7 +40,11 @@ public class NioSocketConnection extends Connection {
 
   @Override
   protected byte[] fetchData() {
-    return new byte[0];
+    this.byteBuffer.flip();
+    byte[] data = new byte[this.byteBuffer.limit()];
+    this.byteBuffer.get(data);
+    this.byteBuffer.clear();
+    return data;
   }
 
 
