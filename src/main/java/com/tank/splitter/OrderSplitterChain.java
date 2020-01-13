@@ -13,7 +13,9 @@ public class OrderSplitterChain {
   public List<Order> doFilter(@NonNull final Order order, int index, List<Order> tmpResult) {
 
     if (index == this.filters.size()) {
-      globalOrders.add(tmpResult.get(0));
+      Order result = tmpResult.get(0);
+      //System.out.println(result.toString());
+      globalOrders.add(result);
       return globalOrders;
     }
 

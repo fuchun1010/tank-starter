@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -38,5 +41,14 @@ public class Order {
 
   public boolean isEmpty() {
     return items.isEmpty();
+  }
+
+
+  @Override
+  public String toString() {
+    List<String> desc = this.items.stream().map(item -> item.getDesc()).collect(Collectors.toList());
+    StringJoiner joiner = new StringJoiner(",");
+    desc.forEach(joiner::add);
+    return joiner.toString();
   }
 }
