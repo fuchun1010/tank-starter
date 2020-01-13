@@ -13,7 +13,6 @@ public class OrderSplitterChain {
   public List<Order> doFilter(@NonNull final Order order, int index, List<Order> tmpResult) {
 
     if (index == this.filters.size()) {
-      //System.out.println(tmpResult.get(0).getItems().size());
       globalOrders.add(tmpResult.get(0));
       return globalOrders;
     }
@@ -21,7 +20,6 @@ public class OrderSplitterChain {
     OrderSpittedFilter filter = this.filters.get(index);
 
     index++;
-
 
     Order target = tmpResult.isEmpty() ? order : tmpResult.get(0);
 
