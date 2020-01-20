@@ -16,7 +16,8 @@ public class SqlTableManagerTest {
     props.put("username", "root");
     props.put("password", "123");
     props.put("url", "jdbc:mysql://localhost:3307/order_crm");
-    Map<String, Object> data = this.sqlTableManager.createSqlTableScript("order_crm", props, 4);
+    int tableNum = 2;
+    Map<String, Object> data = this.sqlTableManager.createSqlTableScript("order_crm", props, tableNum);
     Assert.assertTrue(data.size() > 0);
     this.sqlTableManager.generateSql(data, "order_crm");
   }
