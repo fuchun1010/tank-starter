@@ -1,7 +1,11 @@
 package com.tank.spike;
 
+import com.annimon.stream.IntStream;
+import com.annimon.stream.Stream;
 import com.google.common.collect.Lists;
+import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
 
@@ -10,11 +14,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.format;
 
+@Slf4j
 public class SpikeTest {
 
   @Test
@@ -30,6 +35,78 @@ public class SpikeTest {
 
     System.out.println(format("round = %d, slot = %d", round, offset));
 
+  }
+
+  @Test
+  public void testTimeUnitConvert() {
+//    long result2 = TimeUnit.NANOSECONDS.convert(1, TimeUnit.MILLISECONDS);
+//    long result = TimeUnit.SECONDS.convert(1, TimeUnit.MINUTES);
+//    System.out.println(result2);
+
+    CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> {
+      try {
+        TimeUnit.SECONDS.sleep(1);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      return 1;
+    }).thenApply(index -> index + 1).exceptionally(ex -> {
+      System.out.println(ex.getMessage());
+      return -1;
+    });
+
+
+    CompletableFuture<Integer> f2 = CompletableFuture.supplyAsync(() -> {
+      try {
+        TimeUnit.SECONDS.sleep(100);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      return 1;
+    }).thenApply(index -> index + 1);
+
+    val start = LocalDateTime.now();
+    CompletableFuture.allOf(f1, f2).join();
+    System.out.println("over");
+  }
+
+  @Test
+  public void testThreadPool() {
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(1,
+        Runtime.getRuntime().availableProcessors(),
+        50, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(200),
+        new CustomerThreadFactory("calculate thread"),
+        new ThreadPoolExecutor.CallerRunsPolicy());
+
+    CompletableFuture<Integer> future = CompletableFuture
+        .supplyAsync(() -> IntStream.rangeClosed(1, 100).boxed().toList(), executor)
+        .thenApplyAsync(list -> Stream.of(list).reduce(0, Integer::sum))
+        .exceptionally(ex -> {
+          System.err.println(ex.getMessage());
+          return -1;
+        });
+
+    Integer rs = future.join();
+    System.out.println(rs);
+  }
+
+  private static class CustomerThreadFactory implements ThreadFactory {
+
+    public CustomerThreadFactory(@NonNull final String threadName) {
+      this.threadName = threadName;
+    }
+
+    @Override
+    public Thread newThread(Runnable r) {
+      String entireName = format("%s-->%d", this.threadName, counter.getAndIncrement());
+      Thread thread = new Thread(r, entireName);
+      log.info(thread.getName());
+      return thread;
+    }
+
+    private String threadName;
+
+    private AtomicInteger counter = new AtomicInteger(1);
   }
 
 
