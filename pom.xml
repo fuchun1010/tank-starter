@@ -17,6 +17,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
         <guava.version>23.0</guava.version>
+        <beanstalk.version>2.2.0</beanstalk.version>
     </properties>
 
     <parent>
@@ -96,6 +97,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.16</version>
+        </dependency>
+
+        <!--beanstalkd -->
+        <dependency>
+            <groupId>com.dinstone</groupId>
+            <artifactId>beanstalkc</artifactId>
+            <version>${beanstalk.version}</version>
         </dependency>
 
     </dependencies>
