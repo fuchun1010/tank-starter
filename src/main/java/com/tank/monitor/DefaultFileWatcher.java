@@ -1,11 +1,14 @@
 package com.tank.monitor;
 
+import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.nio.file.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +43,10 @@ public class DefaultFileWatcher implements FileWatcher {
         continue;
       }
       for (WatchEvent<?> event : events) {
-        Item item = new Item(this.path.toFile(), event.kind());
+        String target = Joiner.on(File.separator)
+            .skipNulls()
+            .join(Arrays.asList(this.path.toFile().getAbsolutePath(), event.context()));
+        Item item = new Item(target, event.kind());
         this.eventBus.post(item);
         log.info("target file:[{}]", this.path.toFile().getAbsolutePath());
       }
