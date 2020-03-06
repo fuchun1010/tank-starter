@@ -18,6 +18,7 @@
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
         <guava.version>23.0</guava.version>
         <beanstalk.version>2.2.0</beanstalk.version>
+        <reflection.version>0.9.11</reflection.version>
     </properties>
 
     <parent>
@@ -104,6 +105,13 @@
             <groupId>com.dinstone</groupId>
             <artifactId>beanstalkc</artifactId>
             <version>${beanstalk.version}</version>
+        </dependency>
+
+        <!--reflection lib -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflection.version}</version>
         </dependency>
 
     </dependencies>

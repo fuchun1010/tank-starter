@@ -1,5 +1,7 @@
 package com.tank.spike;
 
+import com.annimon.stream.Stream;
+
 public enum BillTypes {
 
   POS(1, "pos"), B2C(2, "b2c"), O2O(3, "o2o");
@@ -16,6 +18,19 @@ public enum BillTypes {
     this.type = type;
     this.desc = desc;
   }
+
+
+  public int min() {
+    int minValue = Stream.of(BillTypes.values()).map(BillTypes::type).reduce(POS.type, Integer::min);
+    return minValue;
+  }
+
+  public int max() {
+    int minValue = Stream.of(BillTypes.values()).map(BillTypes::type).reduce(POS.type, Integer::max);
+    return minValue;
+  }
+
+
 
 
   private int type;

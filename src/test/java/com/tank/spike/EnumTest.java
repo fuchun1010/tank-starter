@@ -5,6 +5,9 @@ import lombok.val;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+
+import static com.tank.spike.BillTypes.POS;
 
 public class EnumTest {
 
@@ -15,6 +18,11 @@ public class EnumTest {
 
 
   @Test
+  public void testMinOfEnum() {
+    System.out.println(String.format("min = [%d], max = [%d]", POS.min(), POS.max()));
+  }
+
+  @Test
   public void testTimeDiffer() {
     String startDate = "2020-02-05 17:23:22";
     String endDate = "2020-02-06 23:59:59";
@@ -22,6 +30,12 @@ public class EnumTest {
     Schedual schedual = new Schedual();
     val rs = schedual.toSchedualed(milliseconds.intValue());
     System.out.println(rs.toString());
+  }
+
+  @Test
+  public void testTimeUnitConvert() {
+    long millionSeconds = TimeUnit.MILLISECONDS.convert(1L, TimeUnit.SECONDS);
+    System.out.println(millionSeconds);
   }
 
   private int convertUnit(long seconds, int unit) {
