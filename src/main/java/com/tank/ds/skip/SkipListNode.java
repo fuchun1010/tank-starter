@@ -1,5 +1,6 @@
 package com.tank.ds.skip;
 
+import com.google.common.base.MoreObjects;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,13 +10,6 @@ import lombok.Setter;
  * @Date: 2019/9/16 17:48
  */
 public class SkipListNode<T> {
-  private int key;
-  @Getter
-  @Setter
-  private T value;
-  public SkipListNode<T> up, down, left, right; // 上下左右 四个指针   
-  public static final int HEAD_KEY = Integer.MIN_VALUE; // 负无穷   
-  public static final int TAIL_KEY = Integer.MAX_VALUE; // 正无穷   
 
   public SkipListNode(int k, T v) {
     key = k;
@@ -52,7 +46,20 @@ public class SkipListNode<T> {
 
   @Override
   public String toString() {
-    return "key-value:" + key + "-" + value;
+    return MoreObjects.toStringHelper(this)
+        .add("key-value:", this.key)
+        .add("-", this.value)
+        .toString();
   }
+
+  private int key;
+  @Getter
+  @Setter
+  private T value;
+  public SkipListNode<T> up, down, left, right; // 上下左右 四个指针   
+  public static final int HEAD_KEY = Integer.MIN_VALUE; // 负无穷   
+  public static final int TAIL_KEY = Integer.MAX_VALUE; // 正无穷   
+
+
 }
 
