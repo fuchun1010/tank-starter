@@ -1,159 +1,181 @@
 package com.tank.ds.skip;
 
-import lombok.SneakyThrows;
+import java.util.Random;
 
-import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
-
-public class SkipList<D extends Comparable<D>, T> {
+public class SkipList<T> {
 
   public SkipList() {
-    this.maxHeight = 3;
+    random = new Random();
+    clear();
   }
 
-  public SkipList(int maxHeight) {
-    super();
-    this.maxHeight = maxHeight;
+  /**
+   * @Description: 清空跳跃表
+   * @Param: []
+   * @return: void
+   * @Date: 2019/9/16 17:41
+   */
+  public void clear() {
+    head = new Node(Node.HEAD_KEY, null);
+    tail = new Node(Node.TAIL_KEY, null);
+    horizontalLink(head, tail);
+    listLevel = 0;
+    nodes = 0;
   }
 
-  @SneakyThrows
-  public Node<D, T> addNode(Node<D, T> node) {
-
-    if (this.isEmptyHeader()) {
-      this.header = this.p = this.tail = node;
-      //
-      for (int i = 0; i < maxHeight; i++) {
-        Node<D, T> newNode = new Node<>();
-        newNode.data = node.data;
-        this.p.top = newNode;
-        newNode.bottom = this.p;
-        this.p = newNode;
-      }
-      this.levelTail = this.levelPointer = this.p;
-      return header;
-    } else {
-      Node<D, T> target = this.findInsertPosition(node.data);
-      node.right = target.right;
-      if (target.right != null) {
-        target.right.left = node;
-      }
-      target.right = node;
-      node.left = target;
-      this.p = node;
-    }
-
-    int newLevel = this.update2NLevel();
-    Node<D, T> newNode = null;
-    for (int i = 0; i < newLevel; i++) {
-       newNode = new Node<>();
-      newNode.data = node.data;
-      this.p.top = newNode;
-      newNode.bottom = this.p;
-      this.p = newNode;
-      Node<D, T> levelNode = this.findNLevelNode(node, i + 1);
-      if (Objects.nonNull(levelNode)) {
-        levelNode.right = newNode;
-        newNode.left = levelNode;
-      }
-    }
-    this.p = this.header;
-    if (this.tail.getData().compareTo(node.getData()) < 0) {
-      this.tail = node;
-    }
-    return this.header;
-
+  public boolean isEmpty() {
+    return nodes == 0;
   }
 
-  public Node<D, T> getHeader() {
-    return this.header;
+  public int size() {
+    return nodes;
   }
 
-  private Node<D, T> findNLevelNode(Node<D, T> node, int newLevel) {
-    //TODO some bug
-    Node<D, T> tmp = node.left;
-    if (Objects.isNull(tmp)) {
-      return null;
-    }
-    for (int i = 0; i < newLevel; i++) {
-      tmp = tmp.top;
-      if (Objects.isNull(tmp)) {
-        return null;
-      }
-    }
-    return tmp;
-  }
-
-  public void print() {
-
-    Node<D, T> cursor = this.header;
-
-    while (cursor != null) {
-      System.out.println(cursor.getData().toString());
-      cursor = cursor.right;
-    }
-
-  }
-
-
-  private Node<D, T> searchBottomNode() {
-
-    Node<D, T> c = this.p;
-
-    for (; ; ) {
-      if (c.bottom == null) {
-        return c;
-      }
-      c = c.bottom;
-    }
-
-  }
-
-  private Node<D, T> findInsertPosition(D data) {
-    Node<D, T> tmp = this.tail;
-
-
-    for (; ; ) {
-      int result = tmp.getData().compareTo(data);
-      if (result < 0) {
-
-        return tmp;
-      }
-      tmp = tmp.left;
-    }
-  }
-
-  private int heightOfNode() {
-    int sum = 0;
-    Node<D, T> tmp = this.p.top;
+  /**
+   * @Description: 找到要插入的位置前面的那个key 的最底层节点
+   * @Param: [key]
+   * @return: com.jet.SkipListNode<T>
+   * @Date: 2019/9/16 17:42
+   */
+  private Node<T> findNode(int key) {
+    Node<T> p = head;
     while (true) {
-      if (tmp == null) {
+      while (p.right.getKey() != Node.TAIL_KEY && p.right.getKey() <= key) {
+        p = p.right;
+      }
+      if (p.down != null) {
+        p = p.down;
+      } else {
         break;
       }
-      tmp = tmp.top;
+
     }
-    return sum;
+    return p;
   }
 
-  private Node<D, T> findMostTopNode() {
-
-    return null;
+  /**
+   * @Description: 查找是否存在key，存在则返回该节点，否则返回null
+   * @Param: [key]
+   * @return: com.wailian.SkipListNode<T>
+   * @Date: 2019/9/16 17:43
+   */
+  public Node<T> search(int key) {
+    Node<T> p = findNode(key);
+    if (key == p.getKey()) {
+      return p;
+    } else {
+      return null;
+    }
   }
 
-  private int update2NLevel() {
-    return random.nextInt(seed);
+  /**
+   * @Description: 向跳跃表中添加key-value
+   * @Param: [k, v]
+   * @return: void
+   * @Date: 2019/9/16 17:43
+   */
+  public void put(int k, T v) {
+    Node<T> p = findNode(k);
+    // 如果key值相同，替换原来的value即可结束
+    if (k == p.getKey()) {
+      p.setValue(v);
+      return;
+    }
+    Node<T> q = new Node<>(k, v);
+    backLink(p, q);
+    int currentLevel = 0; // 当前所在的层级是0
+    // 计算概率
+    while (random.nextDouble() < PROBABILITY && currentLevel < MAX_LEVEL) {
+      // 如果超出了高度，需要重新建一个顶层
+      if (currentLevel >= listLevel) {
+        listLevel++;
+        Node<T> p1 = new Node<>(Node.HEAD_KEY, null);
+        Node<T> p2 = new Node<>(Node.TAIL_KEY, null);
+        horizontalLink(p1, p2);
+        verticalLink(p1, head);
+        verticalLink(p2, tail);
+        head = p1;
+        tail = p2;
+      }
+      // 将p移动到上一层
+      while (p.up == null) {
+        p = p.left;
+      }
+      p = p.up;
+
+      Node<T> e = new Node<>(k, null); // 只保存key就ok
+      backLink(p, e); // 将e插入到p的后面
+      verticalLink(e, q); // 将e和q上下连接
+      q = e;
+      currentLevel++;
+    }
+    nodes++; // 层数递增
   }
 
-  private boolean isEmptyHeader() {
-    return Objects.isNull(this.header);
+  /**
+   * @Description: node1后面插入node2
+   * @Param: [node1, node2]
+   * @return: void
+   * @Date: 2019/9/16 17:45
+   */
+  private void backLink(Node<T> node1, Node<T> node2) {
+    node2.left = node1;
+    node2.right = node1.right;
+    node1.right.left = node2;
+    node1.right = node2;
   }
 
+  /**
+   * @Description: 水平双向连接
+   * @Param: [node1, node2]
+   * @return: void
+   * @Date: 2019/9/16 17:45
+   */
+  private void horizontalLink(Node<T> node1, Node<T> node2) {
+    node1.right = node2;
+    node2.left = node1;
+  }
 
-  private Node<D, T> header, p, tail, levelTail, levelPointer;
+  /**
+   * @Description: 垂直双向连接
+   * @Param: [node1, node2]
+   * @return: void
+   * @Date: 2019/9/16 17:45
+   */
+  private void verticalLink(Node<T> node1, Node<T> node2) {
+    node1.down = node2;
+    node2.up = node1;
+  }
 
+  @Override
+  public String toString() {
+    if (isEmpty()) {
+      return "跳跃表为空！";
+    }
+    StringBuilder builder = new StringBuilder();
+    Node<T> p = head;
+    while (p.down != null) {
+      p = p.down;
+    }
 
-  private int maxHeight;
+    while (p.left != null) {
+      p = p.left;
+    }
+    if (p.right != null) {
+      p = p.right;
+    }
+    while (p.right != null) {
+      builder.append(p).append("\n");
+      p = p.right;
+    }
 
-  private ThreadLocalRandom random = ThreadLocalRandom.current();
+    return builder.toString();
+  }
 
-  private int seed = 3;
+  private Node<T> head, tail;
+  private int nodes; // 节点总数
+  private int listLevel; // 最大层数
+  private Random random; // 随机数，用于投掷硬币决定是否要加层高
+  private static final double PROBABILITY = 0.25;
+  private static final int MAX_LEVEL = 32;
 }
