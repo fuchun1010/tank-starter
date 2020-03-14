@@ -3,12 +3,6 @@ package com.tank.ds.skip;
 import java.util.Random;
 
 public class SkipList2<T> {
-  private SkipListNode<T> head, tail;
-  private int nodes; // 节点总数
-  private int listLevel; // 最大层数
-  private Random random; // 随机数，用于投掷硬币决定是否要加层高
-  private static final double PROBABILITY = 0.25; // 向上提升一个的概率（此处采用redis中的默认值）
-  private static final int MAX_LEVEL = 32; // 最大层高（此处采用redis中的默认值）
 
   public SkipList2() {
     random = new Random();
@@ -179,4 +173,11 @@ public class SkipList2<T> {
 
     return builder.toString();
   }
+
+  private SkipListNode<T> head, tail;
+  private int nodes; // 节点总数
+  private int listLevel; // 最大层数
+  private Random random; // 随机数，用于投掷硬币决定是否要加层高
+  private static final double PROBABILITY = 0.25;
+  private static final int MAX_LEVEL = 32;
 }
