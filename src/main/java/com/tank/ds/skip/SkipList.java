@@ -20,10 +20,9 @@ public class SkipList<D extends Comparable<D>, T> {
   public Node<D, T> addNode(Node<D, T> node) {
 
     if (this.isEmptyHeader()) {
-      this.header = node;
-      this.p = node;
+      this.header = this.p = this.tail = node;
     } else {
-      Node<D, T> target = this.searchInsertPosition(node.data);
+      Node<D, T> target = this.findInsertPosition(node.data);
       node.right = target.right;
       if (target.right != null) {
         target.right.left = node;
@@ -48,6 +47,9 @@ public class SkipList<D extends Comparable<D>, T> {
       }
     }
     this.p = this.header;
+    if (this.tail.getData().compareTo(node.getData()) < 0) {
+      this.tail = node;
+    }
     return this.header;
 
   }
@@ -57,12 +59,11 @@ public class SkipList<D extends Comparable<D>, T> {
   }
 
   private Node<D, T> searchNLevelNode(Node<D, T> node, int newLevel) {
-
+    //TODO some bug
     Node<D, T> tmp = node.left;
     if (Objects.isNull(tmp)) {
       return null;
     }
-
     for (int i = 0; i < newLevel; i++) {
       tmp = tmp.top;
       if (Objects.isNull(tmp)) {
@@ -97,15 +98,17 @@ public class SkipList<D extends Comparable<D>, T> {
 
   }
 
-  private Node<D, T> searchInsertPosition(D data) {
-    //TODO bug
-    Node<D, T> tmp = this.header;
+  private Node<D, T> findInsertPosition(D data) {
+    Node<D, T> tmp = this.tail;
+
+
     for (; ; ) {
       int result = tmp.getData().compareTo(data);
       if (result < 0) {
+
         return tmp;
       }
-      tmp = tmp.right;
+      tmp = tmp.left;
     }
   }
 

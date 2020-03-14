@@ -10,11 +10,13 @@ public class DsApp {
     Node<Integer, Integer> node5 = new Node<>(5);
     Node<Integer, Integer> node3 = new Node<>(3);
     Node<Integer, Integer> node4 = new Node<>(4);
+    Node<Integer, Integer> node8 = new Node<>(8);
     skipList.addNode(node1);
     skipList.addNode(node5);
     skipList.addNode(node3);
     skipList.addNode(node4);
+    skipList.addNode(node8);
     Node<Integer, Integer> header = skipList.getHeader();
-    System.out.println("header = ");
+    skipList.print();
   }
 }
