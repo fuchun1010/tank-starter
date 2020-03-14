@@ -7,16 +7,15 @@ public class DsApp {
   public static void main(String[] args) {
     SkipList<Integer, Integer> skipList = new SkipList<>(3);
     Node<Integer, Integer> node1 = new Node<>(2);
-//    Node<Integer, Integer> node5 = new Node<>(5);
-//    Node<Integer, Integer> node3 = new Node<>(3);
-//    Node<Integer, Integer> node4 = new Node<>(4);
-//    Node<Integer, Integer> node8 = new Node<>(8);
-//    skipList.addNode(node1);
-//    skipList.addNode(node5);
-//    skipList.addNode(node3);
-//    skipList.addNode(node4);
+    Node<Integer, Integer> node5 = new Node<>(5);
+    Node<Integer, Integer> node3 = new Node<>(3);
+    Node<Integer, Integer> node4 = new Node<>(4);
+    Node<Integer, Integer> node8 = new Node<>(8);
     skipList.addNode(node1);
-    Node<Integer, Integer> header = skipList.getHeader();
+    skipList.addNode(node5);
+    skipList.addNode(node3);
+    skipList.addNode(node4);
+    skipList.addNode(node8);
     skipList.print();
   }
 }

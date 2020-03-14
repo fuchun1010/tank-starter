@@ -30,6 +30,7 @@ public class SkipList<D extends Comparable<D>, T> {
         this.p = newNode;
       }
       this.levelTail = this.p;
+      return header;
     } else {
       Node<D, T> target = this.findInsertPosition(node.data);
       node.right = target.right;
@@ -147,7 +148,7 @@ public class SkipList<D extends Comparable<D>, T> {
   }
 
 
-  private Node<D, T> header, p, tail, levelTail;
+  private Node<D, T> header, p, tail, levelTail, levelPointer;
 
 
   private int maxHeight;
