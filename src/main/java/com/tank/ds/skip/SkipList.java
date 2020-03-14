@@ -29,7 +29,7 @@ public class SkipList<D extends Comparable<D>, T> {
         newNode.bottom = this.p;
         this.p = newNode;
       }
-      this.levelTail = this.p;
+      this.levelTail = this.levelPointer = this.p;
       return header;
     } else {
       Node<D, T> target = this.findInsertPosition(node.data);
@@ -43,9 +43,9 @@ public class SkipList<D extends Comparable<D>, T> {
     }
 
     int newLevel = this.update2NLevel();
-
+    Node<D, T> newNode = null;
     for (int i = 0; i < newLevel; i++) {
-      Node<D, T> newNode = new Node<>();
+       newNode = new Node<>();
       newNode.data = node.data;
       this.p.top = newNode;
       newNode.bottom = this.p;
