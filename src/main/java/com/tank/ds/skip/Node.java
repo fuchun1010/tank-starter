@@ -21,8 +21,8 @@ public class Node<T> {
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
-        .add("key-value:", this.key)
-        .add("-", this.value)
+        .add("key:", this.key)
+        .add("value:", this.value)
         .toString();
   }
 

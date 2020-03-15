@@ -85,7 +85,8 @@ public class SkipList<T> {
     backLink(p, q);
     int currentLevel = 0; // 当前所在的层级是0
     // 计算概率
-    while (random.nextDouble() < PROBABILITY && currentLevel < MAX_LEVEL) {
+    //random.nextDouble() < PROBABILITY
+    while (true && currentLevel < MAX_LEVEL) {
       // 如果超出了高度，需要重新建一个顶层
       if (currentLevel >= listLevel) {
         listLevel++;
