@@ -3,25 +3,16 @@ package com.tank.ds.skip.my;
 import static com.tank.ds.skip.my.Item.HEAD;
 import static com.tank.ds.skip.my.Item.TAIL;
 
-public class MySkiptList<T> {
+public class MySkipList<T> {
 
-  public MySkiptList() {
+  public MySkipList() {
     this.head = new Item<>(HEAD, null);
     this.tail = new Item<>(TAIL, null);
     this.horizontalDoubleLink(this.head, this.tail);
   }
 
-  /**
-   * @param first
-   * @param second
-   */
-  private void horizontalDoubleLink(Item<T> first, Item<T> second) {
-    first.right = second;
-    second.left = first;
-  }
-
   public void put(int key, T data) {
-    Item<T> p = this.findNode(key);
+    Item<T> p = this.findInsertPosition(key);
     if (p.key.compareTo(key) == 0) {
       p.data = data;
       return;
@@ -44,6 +35,15 @@ public class MySkiptList<T> {
   }
 
   /**
+   * @param first
+   * @param second
+   */
+  private void horizontalDoubleLink(Item<T> first, Item<T> second) {
+    first.right = second;
+    second.left = first;
+  }
+
+  /**
    * newItem 插入到p后面
    *
    * @param newItem
@@ -56,21 +56,20 @@ public class MySkiptList<T> {
     p.right = newItem;
   }
 
-  private Item<T> findNode(int key) {
-    Item<T> p = this.head;
+  private Item<T> findInsertPosition(int key) {
+    Item p = this.head;
 
-    while (true) {
-      while (true) {
-        boolean isOk = p.right.key != TAIL && p.right.key < key;
-        if (!isOk) {
-          break;
-        }
+    for (; ; ) {
+
+      while (p.right.key != TAIL && p.right.key < key) {
         p = p.right;
       }
-      if (p.bottom != null) {
-        p = p.bottom;
+      if (p.download != null) {
+        p = p.download;
+      } else {
+        break;
       }
-      break;
+
     }
 
     return p;

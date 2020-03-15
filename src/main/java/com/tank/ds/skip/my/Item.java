@@ -14,7 +14,7 @@ public class Item<T> {
 
   public final static int TAIL = Integer.MAX_VALUE;
 
-  public Item up, bottom, left, right;
+  public Item up, download, left, right;
 
   public Integer key;
 
