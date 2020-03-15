@@ -34,7 +34,6 @@ public class SkipList<T> {
   /**
    * @Description: 找到要插入的位置前面的那个key 的最底层节点
    * @Param: [key]
-   * @return: com.jet.SkipListNode<T>
    * @Date: 2019/9/16 17:42
    */
   private Node<T> findNode(int key) {
@@ -56,8 +55,6 @@ public class SkipList<T> {
   /**
    * @Description: 查找是否存在key，存在则返回该节点，否则返回null
    * @Param: [key]
-   * @return: com.wailian.SkipListNode<T>
-   * @Date: 2019/9/16 17:43
    */
   public Node<T> search(int key) {
     Node<T> p = findNode(key);
@@ -72,7 +69,6 @@ public class SkipList<T> {
    * @Description: 向跳跃表中添加key-value
    * @Param: [k, v]
    * @return: void
-   * @Date: 2019/9/16 17:43
    */
   public void put(int k, T v) {
     Node<T> p = findNode(k);
@@ -85,8 +81,7 @@ public class SkipList<T> {
     backLink(p, q);
     int currentLevel = 0; // 当前所在的层级是0
     // 计算概率
-    //random.nextDouble() < PROBABILITY
-    while (true && currentLevel < MAX_LEVEL) {
+    while (random.nextDouble() < PROBABILITY && currentLevel < MAX_LEVEL) {
       // 如果超出了高度，需要重新建一个顶层
       if (currentLevel >= listLevel) {
         listLevel++;
@@ -171,6 +166,24 @@ public class SkipList<T> {
     }
 
     return builder.toString();
+  }
+
+  public void print() {
+    Node<T> cursor = this.head;
+    while (cursor.down != null) {
+      cursor = cursor.down;
+    }
+
+    for (; ; ) {
+      cursor = cursor.right;
+      if (cursor == null) {
+        break;
+      }
+      if (cursor.getValue() == null) {
+        continue;
+      }
+      System.out.println(cursor.getValue());
+    }
   }
 
   private Node<T> head, tail;
