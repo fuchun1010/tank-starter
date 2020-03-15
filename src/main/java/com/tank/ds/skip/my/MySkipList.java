@@ -18,7 +18,8 @@ public class MySkipList<T> {
       return;
     }
     Item<T> newItem = new Item<>(key, data);
-    backDoubleLink(newItem, p);
+    backDoubleLink(p, newItem);
+    System.out.println("key = " + key + ", data = " + data);
   }
 
   public void print() {
@@ -49,11 +50,13 @@ public class MySkipList<T> {
    * @param newItem
    * @param p
    */
-  private void backDoubleLink(final Item<T> newItem, final Item<T> p) {
-    newItem.right = p.right;
+  private void backDoubleLink(final Item<T> p, final Item<T> newItem) {
+
     newItem.left = p;
+    newItem.right = p.right;
     p.right.left = newItem;
     p.right = newItem;
+
   }
 
   private Item<T> findInsertPosition(int key) {

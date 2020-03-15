@@ -6,13 +6,10 @@ public class DsApp {
   public static void main(String[] args) {
     SkipList<String> skipList = new SkipList<>();
     System.out.println(skipList);
-    skipList.put(6, "cn");
-    skipList.put(1, "https");
-    skipList.put(2, ":");
-    skipList.put(3, "//");
-    skipList.put(1, "http");
-    skipList.put(4, "jetchen");
-    skipList.put(5, ".");
+    skipList.put(1, "1");
+    skipList.put(10, "10");
+    skipList.put(8, "8");
+    skipList.put(5, "5");
     System.out.println(skipList);
     System.out.println(skipList.size());
   }
