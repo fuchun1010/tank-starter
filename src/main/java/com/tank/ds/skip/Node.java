@@ -27,10 +27,10 @@ public class Node<T> {
   }
 
   @Getter
-  private int key;
+  public int key;
   @Getter
   @Setter
-  private T value;
+  public T value;
   public Node<T> up, down, left, right; // 上下左右 四个指针   
   public static final int HEAD_KEY = Integer.MIN_VALUE; // 负无穷   
   public static final int TAIL_KEY = Integer.MAX_VALUE; // 正无穷   
