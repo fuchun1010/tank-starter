@@ -1,25 +1,18 @@
 package com.tank.ds;
 
 import com.tank.ds.skip.MySkipList;
-import com.tank.ds.skip.SkipList;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DsApp {
   public static void main(String[] args) {
-    SkipList<String> skipList = new SkipList<>();
-    skipList.put(1, "1");
-    skipList.put(10, "10");
-    skipList.put(8, "8");
-    skipList.put(5, "5");
-    skipList.put(7, "7");
-    //skipList.print();
-    skipList.clear();
-
-    MySkipList<String> skipList1 = new MySkipList<>();
-    skipList1.put(1, "1");
-    skipList1.put(10, "10");
-    skipList1.put(8, "8");
-    skipList1.put(5, "5");
-    skipList1.put(7, "7");
-    skipList1.pint();
+    MySkipList<String> skipList = new MySkipList<>();
+    ThreadLocalRandom random = ThreadLocalRandom.current();
+    for (int i = 0; i < 100; i++) {
+      int key = random.nextInt(100);
+      skipList.put(key, String.valueOf(i));
+    }
+    skipList.pint();
+    skipList.init();
   }
 }

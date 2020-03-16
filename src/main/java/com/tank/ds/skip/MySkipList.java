@@ -9,10 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MySkipList<T> {
 
   public MySkipList() {
-    this.head = new Node<>(Node.HEAD_KEY, null);
-    this.tail = new Node<>(Node.TAIL_KEY, null);
-    this.horizontalDLink(this.head, this.tail);
-    this.listLevel = 0;
+    this.init();
   }
 
   public void put(int k, T value) {
@@ -23,9 +20,43 @@ public class MySkipList<T> {
     }
     Node<T> q = new Node<>(k, value);
     backDLink(p, q);
-    
+
+    int currentLevel = 0;
+    while (rate < random.nextInt(100) && listLevel < MAX_LEVEL) {
+
+      if (currentLevel >= listLevel) {
+        listLevel++;
+        Node<T> p1 = new Node<>(Node.HEAD_KEY, null);
+        Node<T> p2 = new Node<>(Node.TAIL_KEY, null);
+
+        this.horizontalDLink(p1, p2);
+        this.verticalDLink(p1, this.head);
+        this.verticalDLink(p2, this.tail);
+
+        this.head = p1;
+        this.tail = p2;
+      }
+
+      while (p.up == null) {
+        p = p.left;
+      }
+
+      p = p.up;
+
+      Node<T> e = new Node<>(k, null);
+
+      this.backDLink(p, e);
+      this.verticalDLink(e, q);
+      q = e;
+      currentLevel++;
+    }
+
   }
 
+  private void verticalDLink(Node<T> node1, Node<T> node2) {
+    node1.down = node2;
+    node2.up = node1;
+  }
 
   private void backDLink(Node<T> node1, Node<T> node2) {
     node2.left = node1;
@@ -64,12 +95,16 @@ public class MySkipList<T> {
   public void pint() {
     Node<T> p = this.head;
 
+    while (p.down != null) {
+      p = p.down;
+    }
+
     while (p.getValue() == null) {
       p = p.right;
     }
 
     for (; ; ) {
-      System.out.println(p.getValue());
+      System.out.println(String.format("k = %d, data = %s", p.key, p.getValue()));
       p = p.right;
       if (p.key == Node.TAIL_KEY) {
         break;
@@ -78,6 +113,12 @@ public class MySkipList<T> {
 
   }
 
+  public void init() {
+    this.head = new Node<>(Node.HEAD_KEY, null);
+    this.tail = new Node<>(Node.TAIL_KEY, null);
+    this.horizontalDLink(this.head, this.tail);
+    this.listLevel = 0;
+  }
 
   private final int rate = 25;
 
@@ -85,7 +126,7 @@ public class MySkipList<T> {
 
   private int listLevel = 0;
 
-  private int MAX_LEVEL = 32;
+  private int MAX_LEVEL = 25;
 
   private Node<T> head, tail;
 
