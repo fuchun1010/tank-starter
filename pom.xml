@@ -30,6 +30,19 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.shekhargulati</groupId>
+            <artifactId>strman</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

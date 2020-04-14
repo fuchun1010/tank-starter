@@ -4,7 +4,7 @@ import com.annimon.stream.Stream;
 
 public enum BillTypes {
 
-  POS(1, "pos"), B2C(2, "b2c"), O2O(3, "o2o");
+  POS(1, "pos"), B2C(2, "b2c"), O2O(3, "o2o"), EMPTY(Integer.MAX_VALUE, "empty");
 
   public int type() {
     return this.type;
@@ -29,8 +29,6 @@ public enum BillTypes {
     int minValue = Stream.of(BillTypes.values()).map(BillTypes::type).reduce(POS.type, Integer::max);
     return minValue;
   }
-
-
 
 
   private int type;
