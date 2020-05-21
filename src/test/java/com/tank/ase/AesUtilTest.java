@@ -1,5 +1,6 @@
 package com.tank.ase;
 
+import com.annimon.stream.Stream;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
@@ -27,6 +28,12 @@ public class AesUtilTest {
     cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
     byte[] encrypted = cipher.doFinal(src.getBytes(encodingFormat));
     return Base64.encodeBase64String(encrypted);
+  }
+
+  @Test
+  public void testInfiniteStream() {
+    Stream.iterate(0, i -> i + 0)
+            .forEach(System.out::println);
   }
 
 }

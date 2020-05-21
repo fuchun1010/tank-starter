@@ -1,5 +1,7 @@
 package com.tank.goods;
 
+import lombok.Getter;
+import lombok.val;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +52,49 @@ public class StockSplitterTest {
     item04.setSkuId("4").setDispatchWay(2).setStock("s0002");
 
     Arrays.asList(item01, item02, item03, item04)
-        .stream()
-        .forEach(simpleOrder::addSimpleItem);
+            .stream()
+            .forEach(simpleOrder::addSimpleItem);
+  }
+
+  @Test
+  public void testDir() {
+
+    val keys = System.getProperties().keys();
+    while (keys.hasMoreElements()) {
+      String key = keys.nextElement().toString();
+      System.out.println(String.format("%s, value:[%s]", key, System.getProperty(key)));
+    }
+  }
+
+  @Test
+  public void testSplit() {
+    val result = "[\"https://cdn.pixabay.com/photo/2019/01/25/11/18/girl-3954232__340.jpg\",\"https://cdn.pixabay.com/photo/2018/11/11/16/51/ibis-3809147__340.jpg\",\"https://cdn.pixabay.com/\n" +
+            "photo/2018/07/16/13/17/kiss-3541905__340.jpg\"]";
+
+    int startIndex = result.indexOf("[") + 1;
+    int endIndex = result.indexOf("]") - 1;
+    System.out.println(result.substring(startIndex, endIndex));
+
+  }
+
+
+
+
+  private static class CalculatorTask implements Runnable {
+
+    public CalculatorTask(int value) {
+      this.value = value;
+    }
+
+    @Getter
+    private int value;
+
+    @Override
+    public void run() {
+      this.value++;
+    }
+
+
   }
 
   private SimpleOrder simpleOrder;
